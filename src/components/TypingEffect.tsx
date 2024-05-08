@@ -32,7 +32,7 @@ export function TypewriterEffect() {
         <span>
           <Dot className="text-blue-500 mx-[-5px] animate-ping" size={25} />
         </span>
-        Druster is Live
+        Emplate is Live
       </p>
       <TypewriterEffectSmooth words={words} />
       <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 space-x-0 md:space-x-4">

@@ -5,7 +5,7 @@ import "./globals.css";
 const lexend = Lexend({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Druster",
+  title: "Emplate",
   description: "Personal Prompt Generated Course",
 };
 
