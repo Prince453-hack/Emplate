@@ -1,5 +1,6 @@
 import { createChapterScheme } from "@/app/validators/course";
 import { strict_output } from "@/lib/gpt";
+import { getUnsplashImage } from "@/lib/unsplash";
 import { NextResponse } from "next/server";
 import { ZodError } from "zod";
 
@@ -26,6 +27,16 @@ export async function POST(req: Request, res: Response) {
           "an array of chapters, each chapter should have a youtube search query and a chapter_title key in the JSON format",
       }
     );
+
+    const imageSearchTerm = await strict_output(
+      "You are an AI capable of finding the most relevant image for a course",
+      `Please provide a good image search term for the title of a course about the ${title}. This search term will be fed to the unsplash API, so make sure it is a good search term that will return good results`,
+      {
+        image_search_term: "a good search term for the title of the course",
+      }
+    );
+
+    const courseImage = await getUnsplashImage(imageSearchTerm.image_search_term);
 
     console.log(output_units);
     return NextResponse.json(output_units);
