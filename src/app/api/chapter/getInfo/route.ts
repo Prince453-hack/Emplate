@@ -11,10 +11,25 @@ export async function POST(req: Request, res: Response) {
     const { chapterId } = bodyParser.parse(body);
   } catch (error) {
     if (error instanceof ZodError) {
-      return NextResponse.json({
-        success: false,
-        error: "Invalid Body",
-      });
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Invalid Body",
+        },
+        {
+          status: 400,
+        }
+      );
+    } else {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Something went wrong",
+        },
+        {
+          status: 500,
+        }
+      );
     }
   }
 }
