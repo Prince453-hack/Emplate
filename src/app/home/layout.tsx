@@ -1,5 +1,6 @@
 import Navbar from "@/components/Navbar";
 import { ThemeProvider } from "@/components/Provider";
+import { Toaster } from "@/components/ui/toaster";
 
 export default function RootLayout({
   children,
@@ -12,6 +13,7 @@ export default function RootLayout({
         <ThemeProvider>
           <Navbar />
           {children}
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>

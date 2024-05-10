@@ -10,12 +10,27 @@ import { Separator } from "./ui/separator";
 import { Button } from "./ui/button";
 import { Plus, Trash } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
+import { useToast } from "./ui/use-toast";
+import { useRouter } from "next/navigation";
 
 type Props = {};
 
 type Input = z.infer<typeof createChapterScheme>;
 
 const CreateCourseForm = (props: Props) => {
+  const router = useRouter();
+  const { toast } = useToast();
+  const { mutate: createChapters, isPending } = useMutation({
+    mutationFn: async ({ title, units }: Input) => {
+      const response = await axios.post("/api/course/createChapters", {
+        title,
+        units,
+      });
+      return response.data;
+    },
+  });
   const form = useForm<Input>({
     resolver: zodResolver(createChapterScheme),
     defaultValues: {
@@ -24,7 +39,35 @@ const CreateCourseForm = (props: Props) => {
     },
   });
 
-  function onSubmit(data: Input) {}
+  function onSubmit(data: Input) {
+    if (data.units.every((unit) => unit === "")) {
+      toast({
+        title: "Error",
+        description: "Please fill out all the units",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    createChapters(data, {
+      onSuccess: ({ course_id }) => {
+        toast({
+          title: "Success",
+          description: "Your course has been created",
+        });
+        router.push(`/home/create/${course_id}`);
+      },
+
+      onError: (error) => {
+        console.error(error);
+        toast({
+          title: "Error",
+          description: "Something went wrong",
+          variant: "destructive",
+        });
+      },
+    });
+  }
 
   form.watch();
 
@@ -115,7 +158,12 @@ const CreateCourseForm = (props: Props) => {
             <Separator className="flex-[1]" />
           </div>
 
-          <Button type="submit" className="w-full mt-6" size="lg">
+          <Button
+            type="submit"
+            disabled={isPending}
+            className="w-full mt-6"
+            size="lg"
+          >
             Create Now
           </Button>
         </form>
